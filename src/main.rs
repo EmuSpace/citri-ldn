@@ -129,19 +129,12 @@ fn rocket() -> _ {
                 get_lobbies,
                 register_lobby,
                 update_lobby,
-                delete_lobby,
-                get_profile,
-                ok_for_token_retrieval,
-                ok_for_pkey_retrieval
+                delete_lobby
             ],
         )
 }
 
 // Client refuses to allow a token if it hasn't been verified.
-#[get("/profile")]
-fn get_profile() -> Value {
-    json!({})
-}
 
 #[get("/lobby")]
 fn get_lobbies(shared: &State<Storage>) -> Value {
@@ -227,18 +220,6 @@ fn delete_lobby(id: String, shared: &State<Storage>) {
             info.usage.decrease(addr);
         }
     }
-}
-
-#[get("/jwt/external/key.pem")]
-fn ok_for_pkey_retrieval() -> (ContentType, &'static str) {
-    (ContentType::Plain, fake::PUB_CERTIFICATE_KEY)
-}
-// The previous implementation used the wrong `ContentType` by mistake.
-//
-// The clients now unfortunately rely on this bug, so: we need to replicate the mistakes.
-#[post("/jwt/internal", data = "<_body>")]
-fn ok_for_token_retrieval(_body: String) -> (ContentType, &'static str) {
-    (ContentType::HTML, fake::JWT_TOKEN)
 }
 
 impl Rooms {
