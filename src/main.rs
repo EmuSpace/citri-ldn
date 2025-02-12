@@ -137,12 +137,6 @@ fn rocket() -> _ {
         )
 }
 
-// Client refuses to allow a token if it hasn't been verified.
-#[get("/profile")]
-fn get_profile() -> Value {
-    json!({})
-}
-
 #[get("/lobby")]
 fn get_lobbies(shared: &State<Storage>) -> Value {
     let rooms = shared.read().unwrap();
